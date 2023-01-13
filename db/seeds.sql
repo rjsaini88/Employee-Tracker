@@ -1,7 +1,7 @@
 
 USE employees;
 
-INSERT INTO department
+INSERT INTO departmentgit
     (name)
 VALUES
     ('Sales'),
