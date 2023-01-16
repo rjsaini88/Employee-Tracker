@@ -2,9 +2,9 @@ const db = require("./connection");
 
 async function viewAllDepartments() {
   try {
-    const departments = await db.query("Select * from department").promise();
+    const departments = await db.promise().query("Select * from department").promise();
 
-    return departments;
+    return departments[0];
   } catch (err) {
     console.log(err);
   }

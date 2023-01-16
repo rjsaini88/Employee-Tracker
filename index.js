@@ -14,8 +14,9 @@ const start = async () => {
         "View all roles",
         "View all employees",
         "Add a department",
-        "Add a role, add an employee",
-        "And update an employee role",
+        "Add a role", 
+        "Add an employee",
+        "Update an employee role",
         "Exit",
       ],
     },
@@ -23,7 +24,8 @@ const start = async () => {
 //   console.log(choice);
 switch(choice) {
     case 'View all department':
-        console.table(viewAllDepartments())
+        const data = await viewAllDepartments();
+        console.table(data)
 
 };
 }
