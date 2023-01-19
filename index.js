@@ -1,6 +1,7 @@
 const { prompt } = require("inquirer");
 const db = require("./db/connection");
-const { viewAllDepartments} = require("./db/departments");
+const { viewAllDepartments } = require("./db/departments");
+const { viewAllEmployees } = require("./db/employees");
 
 const start = async () => {
   console.log("Welcome to the Employee Manager!");
@@ -24,8 +25,11 @@ const start = async () => {
 //   console.log(choice);
 switch(choice) {
     case 'View all department':
-        const data = await viewAllDepartments();
-        console.table(data)
+        const departments = await viewAllDepartments();
+        console.table(departments)
+       case 'View all employees':
+        const employees = await viewAllEmployees();
+        console.table(employees)
 
 };
 }
