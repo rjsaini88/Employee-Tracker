@@ -2,7 +2,7 @@ const { prompt } = require("inquirer");
 const db = require("./db/connection");
 const { viewAllDepartments, addDepartment } = require("./db/departments");
 const { viewAllEmployees } = require("./db/employees");
-const { viewAllRoles, addRole } = require("./db/roles");
+const { viewAllRoles, addRole, removeRole } = require("./db/roles");
 
 const start = async () => {
   console.log("Welcome to the Employee Manager!");
@@ -19,6 +19,7 @@ const start = async () => {
         "Add a role",
         "Add an employee",
         "Update an employee role",
+        "Remove a role",
         "Exit",
       ],
     },
@@ -52,6 +53,11 @@ const start = async () => {
       break;
 
     case "Add an employee":
+      break;
+
+    case "Remove a role":
+      const removedRole = await removeRole();
+      console.table(removedRole);
       break;
 
     case "Update an employee role":
