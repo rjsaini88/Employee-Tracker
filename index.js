@@ -1,7 +1,11 @@
 const { prompt } = require("inquirer");
 const db = require("./db/connection");
-const { viewAllDepartments, addDepartment } = require("./db/departments");
-const { viewAllEmployees } = require("./db/employees");
+const {
+  viewAllDepartments,
+  addDepartment,
+  removeDepartment,
+} = require("./db/departments");
+const { viewAllEmployees, addEmployee } = require("./db/employees");
 const { viewAllRoles, addRole, removeRole } = require("./db/roles");
 
 const start = async () => {
@@ -18,8 +22,9 @@ const start = async () => {
         "Add a department",
         "Add a role",
         "Add an employee",
-        "Update an employee role",
+        "Remove department",
         "Remove a role",
+        "Update an employee role",
         "Exit",
       ],
     },
@@ -35,11 +40,13 @@ const start = async () => {
     case "View all roles":
       const roles = await viewAllRoles();
       console.table(roles);
+      console.log(roles);
       break;
 
     case "View all employees":
       const employees = await viewAllEmployees();
       console.table(employees);
+      // console.log(employees);
       break;
 
     case "Add a department":
@@ -53,11 +60,18 @@ const start = async () => {
       break;
 
     case "Add an employee":
+      const newEmployee = await addEmployee();
+      console.table(newEmployee);
+      break;
+
+    case "Remove department":
+      const updatedDepartments = await removeDepartment();
+      console.table(updatedDepartments);
       break;
 
     case "Remove a role":
-      const removedRole = await removeRole();
-      console.table(removedRole);
+      const updatedRole = await removeRole();
+      console.table(updatedRole);
       break;
 
     case "Update an employee role":
