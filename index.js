@@ -40,7 +40,7 @@ const start = async () => {
     case "View all departments":
       const departments = await viewAllDepartments();
       console.table(departments);
-      console.log(departments);
+  
       break;
 
     case "View all roles":

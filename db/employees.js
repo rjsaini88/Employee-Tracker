@@ -1,10 +1,22 @@
 const db = require("./connection");
 const { prompt } = require("inquirer");
 const { viewAllRoles } = require("./roles");
+// const {viewAllDepartments } = require("./departments");
+
+// THEN I am presented with a formatted table showing employee data, including employee ids,
+// first names, last names, job titles, departments, salaries, and
+// managers that the employees report to
 
 async function viewAllEmployees() {
   try {
-    const employees = await db.query("SELECT * FROM employee");
+    const employees =
+      await db.query(`SELECT employee.id, employee.first_name, employee.last_name, employee.manager_id, 
+    role.title AS job_title, role.salary, department.name AS department_name
+    FROM employee
+    LEFT JOIN role 
+    ON employee.role_id = role.id
+    LEFT JOIN department 
+    ON role.department_id = department.id`);
     return employees;
   } catch (err) {
     console.error(err);
@@ -44,15 +56,15 @@ async function addEmployee() {
         choices: [
           ...employees.map((employee) => {
             return {
-                name: `${employee.first_name} ${employee.last_name}`,
-                value: employee.id,
+              name: `${employee.first_name} ${employee.last_name}`,
+              value: employee.id,
             };
           }),
 
-        //   {
-        //       name: "No manager",
-        //       value: 'null',
-        //   },
+          //   {
+          //       name: "No manager",
+          //       value: 'null',
+          //   },
         ],
       },
     ]);
@@ -68,47 +80,43 @@ async function addEmployee() {
   }
 }
 
-async function updateEmployeeRole(){
-    try{
-        const roles = await viewAllRoles();
-        const employees = await viewAllEmployees();
-        const {employee, newRole} = await prompt([
-            {
-type: 'list',
-name: 'employee',
-message: 'Which employee would you like to update?',
-choices: employees.map((employee) =>{
-    return{
-        name: `${employee.first_name} ${employee.last_name}`,
-        value: employee.id,
-    };
+async function updateEmployeeRole() {
+  try {
+    const roles = await viewAllRoles();
+    const employees = await viewAllEmployees();
+    const { employee, newRole } = await prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Which employee would you like to update?",
+        choices: employees.map((employee) => {
+          return {
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id,
+          };
+        }),
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message: "What is the new role?",
+        choices: roles.map((role) => {
+          return {
+            name: role.title,
+            value: role.id,
+          };
+        }),
+      },
+    ]);
+    await db.query(
+      `UPDATE employee SET role_id = ${newRole} WHERE id = ${employee}`
+    );
+    const updateEmployeeRole = await viewAllEmployees();
+    return await updateEmployeeRole;
+  } catch (err) {
+    console.log(err);
+  }
 }
-),
-            },
-            {
-                type: 'list',
-                name: 'newRole',
-                message: "What is the new role?",
-                choices: roles.map((role) =>{
-                    return{
-                        name: role.title,
-                        value: role.id,
-                    
-                    }
-                }
-                )
-            }
-        ]);
-        await db.query (`UPDATE employee SET role_id = ${newRole} WHERE id = ${employee}`);
-        const updateEmployeeRole = await viewAllEmployees();
-        return await updateEmployeeRole; 
-
-    }
-    catch(err) {
-        console.log(err);
-
-}}
-
 
 async function removeEmployee() {
   try {
@@ -118,10 +126,10 @@ async function removeEmployee() {
         type: "list",
         name: "id",
         message: "Which employee would you like to remove?",
-        choices: employees.map((employee) =>{
-            return{
-                name: `${employee.first_name} ${employee.last_name}`,
-                value: employee.id,
+        choices: employees.map((employee) => {
+          return {
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id,
           };
         }),
       },
@@ -135,4 +143,4 @@ async function removeEmployee() {
   }
 }
 
-module.exports = { viewAllEmployees, addEmployee, updateEmployeeRole, removeEmployee };
+module.exports = {viewAllEmployees, addEmployee, updateEmployeeRole, removeEmployee, };

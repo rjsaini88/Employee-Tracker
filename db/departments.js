@@ -1,11 +1,10 @@
 const db = require("./connection");
 const { prompt } = require("inquirer");
 
-//Async function that returns all the departments from the query.
-// THEN I am presented with a formatted table showing department names and department ids
+
 async function viewAllDepartments() {
   try {
-    const departments = await db.query("SELECT * FROM department");
+    const departments = await db.query(`SELECT department.name, department.id FROM department ORDER by department.id`);
     // console.log(departments)
     return departments;
   } catch (err) {
@@ -24,7 +23,6 @@ async function addDepartment() {
     // console.log(deptName)
     await db.query(`INSERT into department (name) VALUES ("${name}")`);
     const newDepartment = await viewAllDepartments();
-    console.log(newDepartment);
     return newDepartment;
   } catch (err) {
     console.log(err);
