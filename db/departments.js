@@ -2,6 +2,7 @@ const db = require("./connection");
 const { prompt } = require("inquirer");
 
 //Async function that returns all the departments from the query.
+// THEN I am presented with a formatted table showing department names and department ids
 async function viewAllDepartments() {
   try {
     const departments = await db.query("SELECT * FROM department");

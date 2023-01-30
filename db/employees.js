@@ -51,7 +51,7 @@ async function addEmployee() {
 
         //   {
         //       name: "No manager",
-        //       value: null,
+        //       value: 'null',
         //   },
         ],
       },
@@ -68,29 +68,71 @@ async function addEmployee() {
   }
 }
 
-// async function removeEmployee() {
-//   try {
-//     const roles = await viewAllRoles();
-//     const { id } = await prompt([
-//       {
-//         type: "list",
-//         name: "id",
-//         message: "What is the title for the role you want to remove?",
-//         choices: roles.map((role) => {
-//           return {
-//             name: role.title,
-//             value: role.id,
-//           };
-//         }),
-//       },
-//     ]);
-//     await db.query(`DELETE FROM role WHERE id = ${id}`);
-//     const updatedRoles = await viewAllRoles();
-//     console.log(updatedRoles);
-//     return updatedRoles;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
+async function updateEmployeeRole(){
+    try{
+        const roles = await viewAllRoles();
+        const employees = await viewAllEmployees();
+        const {employee, newRole} = await prompt([
+            {
+type: 'list',
+name: 'employee',
+message: 'Which employee would you like to update?',
+choices: employees.map((employee) =>{
+    return{
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id,
+    };
+}
+),
+            },
+            {
+                type: 'list',
+                name: 'newRole',
+                message: "What is the new role?",
+                choices: roles.map((role) =>{
+                    return{
+                        name: role.title,
+                        value: role.id,
+                    
+                    }
+                }
+                )
+            }
+        ]);
+        await db.query (`UPDATE employee SET role_id = ${newRole} WHERE id = ${employee}`);
+        const updateEmployeeRole = await viewAllEmployees();
+        return await updateEmployeeRole; 
 
-module.exports = { viewAllEmployees, addEmployee };
+    }
+    catch(err) {
+        console.log(err);
+
+}}
+
+
+async function removeEmployee() {
+  try {
+    const employees = await viewAllEmployees();
+    const { id } = await prompt([
+      {
+        type: "list",
+        name: "id",
+        message: "Which employee would you like to remove?",
+        choices: employees.map((employee) =>{
+            return{
+                name: `${employee.first_name} ${employee.last_name}`,
+                value: employee.id,
+          };
+        }),
+      },
+    ]);
+    await db.query(`DELETE FROM employee WHERE id = ${id}`);
+    const updatedEmployees = await viewAllEmployees();
+    // console.log(updatedEmployees);
+    return updatedEmployees;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+module.exports = { viewAllEmployees, addEmployee, updateEmployeeRole, removeEmployee };

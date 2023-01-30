@@ -3,9 +3,25 @@ const { prompt } = require("inquirer");
 const { viewAllDepartments } = require("./departments");
 // const { up } = require("inquirer/lib/utils/readline");
 
+// SELECT Customers.CustomerName, Orders.OrderID
+// FROM Customers
+// LEFT JOIN Orders
+// ON Customers.CustomerID=Orders.CustomerID
+// ORDER BY Customers.CustomerName;
+
+// THEN I am presented with the job title, role id, the department that
+// role belongs to, and the salary for that role
+
+// SELECT role.title, role.id, department.name FROM role LEFT JOIN department ON
+// role.department_id=department.id ORDER by role.title;
 async function viewAllRoles() {
   try {
-    const roles = await db.query("SELECT * FROM role");
+    const roles = await db.query(`
+        SELECT role.title, role.id, department.name 
+        FROM role 
+        LEFT JOIN department 
+        ON role.department_id=department.id 
+        ORDER by role.id`);
     return roles;
   } catch (err) {
     console.error(err);
@@ -13,8 +29,8 @@ async function viewAllRoles() {
 }
 
 async function addRole() {
-    try {
-      const departments = await viewAllDepartments();
+  try {
+    const departments = await viewAllDepartments();
     const { title, salary, department_id } = await prompt([
       {
         type: "input",
